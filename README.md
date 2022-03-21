@@ -27,3 +27,9 @@ Se detallan a continuación los pasos necesarios para dejar nuestra app lista en
 
 7. Al guardar modificaciones en las variables de entorno, realizar actualizaciones del codigo de nuestra aplicacion u otros cambios, EB automáticamente se encargará de aplicar las configuraciones correspondientes sin necesidad de conectarnos directamente a las instancias. De hecho, esto no deberá ser necesario, salvo excepciones, ya que Beanstalk también se encarga del autoscaling de nuestra aplicación haciendo provisioning de sub-instancias para mantener un determinado nivel de performance. Esto quiere decir que las instancias que funcionan debajo seran constantemente reemplazadas por lo que no debemos depender de una configuracion especifica dentro de las mismas.
 
+8. Ahora que tenemos Beanstalk iniciado y con las variables de entorno necesarias ya añadidas, el siguiente paso es hacer deployment de nuestra propia aplicación. Para lograrlo vamos a usar [Github Actions](https://docs.github.com/en/actions) que mediante archivos de configuración dentro del propio repositorio del proyecto nos va a permitir controlar el workflow de desarrollo. Si bien es posible automatizar muchos procesos utilizando las Actions, nos enfocaremos en la que nos permitirá hacer deployment de nuestra aplicación particularmente en Elastic Beanstalk.
+     1. Crear las carpetas `.github/workflows` en la raíz del proyecto
+     2. Crear un archivo `.yml` con un nombre descriptivo como `eb_deploy_action.yml`
+     3. Incluir en su contenido [el ejemplo de este reposorio]()
+
+
