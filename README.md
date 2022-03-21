@@ -25,11 +25,22 @@ Se detallan a continuación los pasos necesarios para dejar nuestra app lista en
 6. Por defecto se asignará una instancia EC2 de la free tier para nuestra aplicación. Una vez creado el ambiente, visitar la sección de configuración donde se encontrará mayor detalle de esta y otras configuraciones. Por ejemplo la sección de "Software" nos permitirá añadir variables de entorno que estarán disponibles para nuestra aplicación. 
 ![image](https://user-images.githubusercontent.com/4985062/159371063-4c77d8bd-14b7-4266-9e4d-3af079aa6445.png)
 
-7. Al guardar modificaciones en las variables de entorno, realizar actualizaciones del codigo de nuestra aplicacion u otros cambios, EB automáticamente se encargará de aplicar las configuraciones correspondientes sin necesidad de conectarnos directamente a las instancias. De hecho, esto no deberá ser necesario, salvo excepciones, ya que Beanstalk también se encarga del autoscaling de nuestra aplicación haciendo provisioning de sub-instancias para mantener un determinado nivel de performance. Esto quiere decir que las instancias que funcionan debajo seran constantemente reemplazadas por lo que no debemos depender de una configuracion especifica dentro de las mismas.
+7. Al guardar modificaciones en las variables de entorno, realizar actualizaciones del código de nuestra aplicación u otros cambios, EB automáticamente se encargará de aplicar las configuraciones correspondientes sin necesidad de conectarnos directamente a las instancias. De hecho, esto no deberá ser necesario, salvo excepciones, ya que Beanstalk también se encarga del autoscaling de nuestra aplicación haciendo provisioning de sub-instancias para mantener un determinado nivel de performance. Esto quiere decir que las instancias que funcionan debajo seran constantemente reemplazadas por lo que no debemos depender de una configuracion especifica dentro de las mismas.
 
 8. Ahora que tenemos Beanstalk iniciado y con las variables de entorno necesarias ya añadidas, el siguiente paso es hacer deployment de nuestra propia aplicación. Para lograrlo vamos a usar [Github Actions](https://docs.github.com/en/actions) que mediante archivos de configuración dentro del propio repositorio del proyecto nos va a permitir controlar el workflow de desarrollo. Si bien es posible automatizar muchos procesos utilizando las Actions, nos enfocaremos en la que nos permitirá hacer deployment de nuestra aplicación particularmente en Elastic Beanstalk.
      1. Crear las carpetas `.github/workflows` en la raíz del proyecto
      2. Crear un archivo `.yml` con un nombre descriptivo como `eb_deploy_action.yml`
-     3. Incluir en su contenido [el ejemplo de este reposorio]()
+     3. Incluir en su contenido [el ejemplo de este reposorio](https://github.com/zircon-tech/aws-eb-setup/blob/main/.github/workflows/eb_deploy_action.yml). Notar que ésta Github Action realiza la ejecución sí y solo sí lo que estamos realizando es un `push` al branch `develop` por lo que deberemos adaptarlo en caso de que nuestro branch de deployment sea diferente. De la misma forma, pueden añadirse sentencias adicionales en caso que deseemos hacer deployment bajo otras condiciones.
 
+9. Modificar el archivo incluído en el paso anterior con las características del proyecto como el App Name, Environment Name y principalmente los comandos de requerimientos y compilación que varían según la base de nuestro projecto. En ese caso la base es una aplicación NodeJS pero será diferente en otros casos claramente. [Aqui](https://github.com/actions/setup-python) pueden encontrarse configuraciones para Python a modo de ejemplo.
+
+10. Para que esta nueva Action pueda efectivamente realizar el deployment es necesario proveer keys de AWS con permisos de CLI. Como queremos mantener esta información de forma oculta, las actions permiten referenciar `secrets` utilizando la sintáxis de `${{ secrets.AWS_ACCESS_KEY_ID }}` como muestra el ejemplo. Por lo tanto, deberemos agregar estos parámetros en la sección de [settings](https://github.com/zircon-tech/aws-eb-setup/settings/secrets/actions) correspondiente en el propio repo. En caso de no contar con claves de AWS para un projecto en Zircon, solicitar acceso.
+
+11. Bajo las circunstancias descritas, al realizar un nuevo `push` o `merge` sobre el branch `develop` el Github Action hará deployment de una nueva versión de la aplicación en Elastic Beanstalk. Se podrá ver el estado de ejecución en la [tab de Actions](https://github.com/zircon-tech/aws-eb-setup/actions) del repo.
+
+Eso es todo! Mucha suerte con tu setup! 🚀
+
+--
+
+PD: Se agradecen PRs para contribuir con la descripción de estos pasos en caso de que te hayas encontrado con otros obstáculos. Los próximos devs van a estar agradecidos 😉
 
